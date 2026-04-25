@@ -262,8 +262,9 @@
     function extractPrice(filename) {
       // Remove extension first: "1-250.jpg" → "1-250"
       const nameOnly = filename.replace(/\.[^.]+$/, '');
-      // Match pattern: anything-PRICE  (e.g. "1-250", "3p-599")
-      const match = nameOnly.match(/-(\d+)$/);
+      // Match pattern: anything, then a hyphen, then optional spaces, then digits at the end
+      // e.g. "1-250", "3p - 599", "item-100"
+      const match = nameOnly.match(/-[\s]*(\d+)[\s]*$/);
       if (match) return 'Rs. ' + match[1];
       return null;
     }
@@ -279,7 +280,9 @@
 
     // Fetch folder contents from GitHub API
     async function fetchGitHubFolder(folderPath) {
-      const url = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${folderPath}?ref=${GITHUB_BRANCH}`;
+      // Add a timestamp to the URL to prevent caching and ensure we see the latest filenames
+      const cacheBuster = Date.now();
+      const url = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${folderPath}?ref=${GITHUB_BRANCH}&cb=${cacheBuster}`;
       try {
         const response = await fetch(url);
         if (!response.ok) return [];
@@ -322,9 +325,9 @@
         return b.num - a.num;  // Regular: descending (newest first)
       });
 
-      // Build the images list with paths and prices
+      // Build the images list with direct GitHub Raw paths and prices
       const imagesList = sorted.map(f => ({
-        path: f.localPath,
+        path: `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${f.localPath}`,
         price: extractPrice(f.name) || 'Rs. 000'
       }));
 
