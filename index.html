@@ -257,25 +257,35 @@
       'portraits': { title: 'Handcrafted Portraits', path: 'assets/potraits' }
     };
 
-    // Extract the price from a filename like "1-250.jpg" → "Rs. 250"
-    // If no price pattern found (e.g. "1.jpg"), returns null
-    function extractPrice(filename) {
-      // Remove extension first: "1-250.jpg" → "1-250"
+    // New Robust filename parsing: "ID-PRICE-TITLE-SUBTITLE.jpg"
+    // Examples: "1-250.jpg", "9-179-Couple_Initials.jpg", "11-250-Ganesha-Micro_Art.jpg"
+    
+    function parseFileName(filename) {
       const nameOnly = filename.replace(/\.[^.]+$/, '');
-      // Match pattern: anything, then a hyphen, then optional spaces, then digits at the end
-      // e.g. "1-250", "3p - 599", "item-100"
-      const match = nameOnly.match(/-[\s]*(\d+)[\s]*$/);
-      if (match) return 'Rs. ' + match[1];
-      return null;
-    }
+      const parts = nameOnly.split('-'); // Split by hyphen
+      
+      const idPart = parts[0] || '999';
+      const pricePart = parts[1] || null;
+      const titlePart = parts[2] ? parts[2].replace(/_/g, ' ') : 'Handcrafted Masterpiece';
+      const subtitlePart = parts[3] ? parts[3].replace(/_/g, ' ') : 'Specially made for you';
 
-    // Extract the sort key from a filename: "2p-300.jpg" → "2p", "5-120.jpg" → 5
-    function extractSortKey(filename) {
-      const nameOnly = filename.replace(/\.[^.]+$/, '');
-      const base = nameOnly.split('-')[0]; // "2p" or "5"
-      // Check if it's a pinned file (ends with 'p')
-      if (base.endsWith('p')) return { pinned: true, num: parseInt(base) };
-      return { pinned: false, num: parseInt(base) || 999 };
+      // Sort logic
+      let pinned = false;
+      let num = 999;
+      if (idPart.endsWith('p')) {
+        pinned = true;
+        num = parseInt(idPart) || 999;
+      } else {
+        num = parseInt(idPart) || 999;
+      }
+
+      return {
+        pinned,
+        num,
+        price: pricePart ? 'Rs. ' + pricePart : 'Rs. 000',
+        title: titlePart,
+        subtitle: subtitlePart
+      };
     }
 
     // Fetch folder contents from GitHub API
@@ -317,18 +327,20 @@
       const sorted = files.map(f => ({
         name: f.name,
         localPath: `${data.path}/${f.name}`,
-        ...extractSortKey(f.name)
+        meta: parseFileName(f.name)
       })).sort((a, b) => {
-        if (a.pinned && !b.pinned) return -1;  // Pinned always first
-        if (!a.pinned && b.pinned) return 1;
-        if (a.pinned && b.pinned) return a.num - b.num;  // Pinned: ascending (1p, 2p, 3p)
-        return b.num - a.num;  // Regular: descending (newest first)
+        if (a.meta.pinned && !b.meta.pinned) return -1;
+        if (!a.meta.pinned && b.meta.pinned) return 1;
+        if (a.meta.pinned && b.meta.pinned) return a.meta.num - b.meta.num;
+        return b.meta.num - a.meta.num;
       });
 
-      // Build the images list with direct GitHub Raw paths and prices
+      // Build the images list with direct GitHub Raw paths and extracted metadata
       const imagesList = sorted.map(f => ({
         path: `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${f.localPath}`,
-        price: extractPrice(f.name) || 'Rs. 000'
+        price: f.meta.price,
+        title: f.meta.title,
+        subtitle: f.meta.subtitle
       }));
 
       grid.innerHTML = ''; // Clear loading text
@@ -409,20 +421,20 @@
         leftBox.style.flex = '1';
         leftBox.style.paddingRight = '10px'; // Prevent bumping price
 
-        const titleEl = document.createElement('h4');
-        titleEl.textContent = 'Premium Masterpiece Art'; // 3 words
+        const titleEl = document.createElement('h3');
+        titleEl.textContent = item.title;
         titleEl.style.fontFamily = 'var(--font-heading)';
-        titleEl.style.fontSize = '1.15rem'; // slightly smaller to prevent aggressive wrapping
-        titleEl.style.margin = '0 0 4px 0';
-        titleEl.style.color = 'var(--text-main)';
+        titleEl.style.fontSize = '1.3rem';
         titleEl.style.fontWeight = '700';
-        titleEl.style.lineHeight = '1.2';
+        titleEl.style.color = 'var(--text-main)';
+        titleEl.style.marginBottom = '2px';
 
-        const subtitleEl = document.createElement('span');
-        subtitleEl.textContent = 'Handcrafted with extreme precision';
+        const subtitleEl = document.createElement('p');
+        subtitleEl.textContent = item.subtitle;
         subtitleEl.style.fontFamily = 'var(--font-body)';
-        subtitleEl.style.fontSize = '13.5px';
+        subtitleEl.style.fontSize = '0.9rem';
         subtitleEl.style.color = 'var(--text-muted)';
+        subtitleEl.style.margin = '0';
         subtitleEl.style.lineHeight = '1.4';
 
         leftBox.appendChild(titleEl);

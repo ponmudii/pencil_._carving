@@ -1,0 +1,19 @@
+ID - PRICE - TITLE - SUBTITLE .jpg
+
+Title Only: 9-179-Couple_Initials.jpg
+Result: Price: Rs. 179 | Title: Couple Initials
+
+
+
+Title + Subtitle: 11-250-Lord_Ganesha-Micro_Pencil_Art.jpg
+Result: Price: Rs. 250 | Title: Lord Ganesha | Subtitle: Micro Pencil Art
+
+
+
+Reminder:
+Don't forget to Push your changes to GitHub after renaming them locally! Once you push, the website will update immediately with the new names and prices.
+
+
+
+to easily push images / code / files / whatever u changed 
+press Website Updater.bat
