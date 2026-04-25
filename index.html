@@ -114,7 +114,7 @@
 
     <footer>
       <p>© 2025 Ponmudi Creations. All rights reserved.</p>
-      <p style="font-size: 0.8rem; opacity: 0.6;">Crafting memories, one gift at a time.</p>
+      <p style="font-size: 0.8rem; opacity: 0.6;">Crafting memories, multiple gift at a time.</p>
     </footer>
   </div>
 
@@ -170,7 +170,7 @@
       <section class="about-section">
         <h2>Who I Am</h2>
         <p>Hi! I'm a young entrepreneur and creative soul who believes in turning everyday moments into treasured
-          memories. What started as a hobby has blossomed into my true passion — creating handmade, personalized gifts
+          memories. What started as a hobby has blossomed into my true passion - creating handmade, personalized gifts
           that touch hearts and last forever.</p>
       </section>
 
@@ -259,11 +259,11 @@
 
     // New Robust filename parsing: "ID-PRICE-TITLE-SUBTITLE.jpg"
     // Examples: "1-250.jpg", "9-179-Couple_Initials.jpg", "11-250-Ganesha-Micro_Art.jpg"
-    
+
     function parseFileName(filename) {
       const nameOnly = filename.replace(/\.[^.]+$/, '');
       const parts = nameOnly.split('-'); // Split by hyphen
-      
+
       const idPart = parts[0] || '999';
       const pricePart = parts[1] || null;
       const titlePart = parts[2] ? parts[2].replace(/_/g, ' ') : 'Handcrafted Masterpiece';
