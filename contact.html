@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact & Order - Ponmudi Creations</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <style>
+    /* Specific styles for the deeply themed contact form */
+    .price-display {
+      background: rgba(163, 129, 106, 0.1);
+      border: 1px solid rgba(163, 129, 106, 0.3);
+      padding: 15px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 1.5rem;
+      font-family: var(--font-body);
+      color: var(--text-main);
+    }
+
+    .price-display span {
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .contact-wrapper {
+      max-width: 650px;
+      margin: -60px auto 40px;
+      position: relative;
+      z-index: 3;
+    }
+
+    .contact-form {
+      background: var(--surface-color);
+      padding: 3.5rem;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 500;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+      font-family: var(--font-body);
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid rgba(163, 129, 106, 0.3);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      background-color: #fafafa;
+      transition: all 0.3s ease;
+      color: var(--text-main);
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(217, 138, 142, 0.15);
+      background-color: #fff;
+    }
+
+    .contact-form .btn {
+      width: 100%;
+      margin-top: 1rem;
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <div class="profile-icon" onclick="window.history.back()">
+    <!-- Reusing profile icon styling for a back button here -->
+    <span style="font-family: var(--font-body); font-weight: bold; color: var(--primary); padding: 0 5px;">&larr;</span>
+  </div>
+  <a class="about-link" href="index.html">Home</a>
+
+  <!-- Header -->
+  <div class="about-header" style="height: 35vh;">
+    <h1 class="fade-in-up">Contact & Order</h1>
+  </div>
+
+  <!-- Form Section -->
+  <div class="contact-wrapper fade-in-up delay-1">
+    <div class="contact-form">
+      <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem; font-size: 1.1rem;">
+        Fill out the form below to place your custom order. I will reach out to you via WhatsApp to discuss designs! 🎁
+      </p>
+
+      <form id="orderForm" onsubmit="sendToWhatsApp(event)">
+
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" name="name" required placeholder="John Doe">
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" required placeholder="hello@example.com">
+        </div>
+
+        <div class="form-group">
+          <label for="whatsapp">Your WhatsApp Number</label>
+          <input type="tel" id="whatsapp" name="whatsapp" required placeholder="+91 xxxxx xxxxx">
+        </div>
+
+        <div class="form-group">
+          <label for="orderText">Text/Word to Create</label>
+          <input type="text" id="orderText" name="orderText" required
+            placeholder="Type word (e.g., Love) or sculpture(discribe sculpture like mom and son)"
+            oninput="calculatePrice()">
+        </div>
+
+        <div class="price-display" id="priceDisplay" style="display: none;">
+          Original Price: <span id="originalPrice">₹0</span> <br>
+          Advance Amount (50%): <span id="advanceAmount">₹0</span>
+        </div>
+
+        <div class="form-group">
+          <label for="message">Additional details or requests? <br><span style="font-size: 0.85em; font-weight: 400; color: var(--text-muted);">"e.g, colour theme, gift wrapper etc..."</span></label>
+          <textarea id="message" name="message" rows="5" required
+            placeholder="Tell me about the design, occasion, and any specific requests..."></textarea>
+        </div>
+
+        <button type="submit" class="btn" id="payBtn">Pay Advance & Send Order</button>
+      </form>
+
+      <script>
+        let calculatedAdvanceAmount = 0;
+
+        function calculatePrice() {
+          const text = document.getElementById('orderText').value.trim();
+          let originalPrice = 0;
+
+          if (!text) {
+            document.getElementById('priceDisplay').style.display = 'none';
+            calculatedAdvanceAmount = 0;
+            return;
+          }
+
+          document.getElementById('priceDisplay').style.display = 'block';
+
+          // Secret code for fake payment bypass
+          if (text === '63812638840') {
+            originalPrice = 0;
+            calculatedAdvanceAmount = 0;
+            document.getElementById('originalPrice').innerText = '₹0';
+            document.getElementById('advanceAmount').innerText = '₹0 (Fake Payment Mode)';
+            return;
+          }
+          // Secret code for ₹1 demo payment
+          if (text === '6381263884') {
+            originalPrice = 2; // Advance will be 1
+            calculatedAdvanceAmount = 1;
+            document.getElementById('originalPrice').innerText = '₹2';
+            document.getElementById('advanceAmount').innerText = '₹1 (demo Payment Mode)';
+            return;
+          }
+
+          // Check for sculpture(x) where x can be anything
+          const sculptureMatch = text.match(/sculpture\((.*?)\)/i);
+
+          if (sculptureMatch) {
+            originalPrice = 500;
+          } else {
+            // Count all characters except spaces (including numbers and emojis)
+            // Using Intl.Segmenter to correctly count complex emojis (like ❤️ which has multiple code points) as single visual characters
+            const textWithoutSpaces = text.replace(/\s/g, '');
+            const segmenter = new Intl.Segmenter('en', { granularity: 'grapheme' });
+            const charCount = [...segmenter.segment(textWithoutSpaces)].length;
+            if (charCount > 4) {
+              originalPrice = charCount * 35;
+            } else {
+              originalPrice = 175;
+            }
+          }
+
+          calculatedAdvanceAmount = originalPrice / 2;
+
+          document.getElementById('originalPrice').innerText = '₹' + originalPrice;
+          document.getElementById('advanceAmount').innerText = '₹' + calculatedAdvanceAmount;
+        }
+
+        function sendToWhatsApp(e) {
+          e.preventDefault(); // Stop normal form submission
+
+          const orderText = document.getElementById('orderText').value.trim();
+          const name = document.getElementById('name').value;
+          const email = document.getElementById('email').value;
+          const userPhone = document.getElementById('whatsapp').value;
+          const message = document.getElementById('message').value;
+
+          // Fake Payment Mode Bypass
+          if (orderText === '63812638840') {
+            const paymentId = "FAKE_" + Math.floor(Math.random() * 1000000);
+            const myWhatsAppNumber = "+916381263884";
+            const text = `*New Order Request!* 🎁%0A%0A*Name:* ${name}%0A*Email:* ${email}%0A*Their Phone:* ${userPhone}%0A%0A*Order Text:* ${orderText}%0A*Advance Paid:* ₹0 (FAKE)%0A*Payment ID:* ${paymentId}%0A%0A*Additional Details:*%0A${message}`;
+
+            alert("Fake Payment successful! Redirecting to WhatsApp to complete your order.");
+            window.location.href = `https://wa.me/${myWhatsAppNumber}?text=${text}`;
+            return;
+          }
+
+          if (calculatedAdvanceAmount <= 0) {
+            alert('Please enter a valid text to calculate the price.');
+            return;
+          }
+
+          // Razorpay integration
+          var options = {
+            "key": "rzp_live_Shf4rADmzpWuMg", // Live Key ID
+            "amount": calculatedAdvanceAmount * 100, // Amount is in paise
+            "currency": "INR",
+            "name": "Ponmudi Creations",
+            "description": "Advance Payment for Order",
+            "handler": function (response) {
+              // Successful payment
+              const paymentId = response.razorpay_payment_id;
+
+              // 👉 ENTER YOUR WHATSAPP NUMBER HERE (including country code, no + or spaces)
+              const myWhatsAppNumber = "+916381263884";
+
+              // Format the message
+              const text = `*New Order Request!* 🎁%0A%0A*Name:* ${name}%0A*Email:* ${email}%0A*Their Phone:* ${userPhone}%0A%0A*Order Text:* ${orderText}%0A*Advance Paid:* ₹${calculatedAdvanceAmount}%0A*Payment ID:* ${paymentId}%0A%0A*Additional Details:*%0A${message}`;
+
+              // Alert first so the user knows payment was successful
+              alert("Payment successful! Redirecting to WhatsApp to complete your order.");
+
+              // Redirect the current tab to avoid popup blockers
+              window.location.href = `https://wa.me/${myWhatsAppNumber}?text=${text}`;
+            },
+            "prefill": {
+              "name": name,
+              "email": email,
+              "contact": userPhone
+            },
+            "theme": {
+              "color": "#d98a8e"
+            }
+          };
+          var rzp1 = new Razorpay(options);
+          rzp1.on('payment.failed', function (response) {
+            alert("Payment failed. Reason: " + response.error.description);
+          });
+          rzp1.open();
+        }
+      </script>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 Ponmudi Creations. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Fade in animation on load
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll('.fade-in-up').forEach(el => {
+        setTimeout(() => {
+          el.classList.add('visible');
+        }, 100);
+      });
+    });
+  </script>
+</body>
+
+</html>

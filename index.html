@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Graphite Gallery -by Ponmudi</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+
+  <!-- Home Icon Link -->
+  <div class="profile-icon" onclick="showSection('home')" title="Go to Home">
+    <img src="assets/images/home.png" alt="Home"
+      onerror="this.src='https://cdn-icons-png.flaticon.com/512/1946/1946488.png'" />
+  </div>
+
+  <a class="about-link" id="aboutLink" onclick="handleAboutClick()">About Me</a>
+
+  <div id="profileMenu" class="profile-menu">
+    <ul>
+      <li onclick="showSection('home')">Home</li>
+      <li onclick="showSection('about')">About Us</li>
+      <li onclick="window.location.href='Profile.html'">Profile</li>
+      <li onclick="window.location.href='cart.html'">Cart</li>
+      <li onclick="window.location.href='contact.html'">Contact Us</li>
+    </ul>
+  </div>
+
+  <!-- MAIN HOME SECTION -->
+  <div id="home-section" class="page-section active">
+    <!-- Hero / Header -->
+    <header class="header">
+      <div class="fade-in-up">
+        <h1 class="site-title">Graphite Gallery</h1>
+        <span class="accent-text">by Ponmudi</span>
+        <p>Turn your beautiful everyday moments into treasured, handcrafted memories.</p>
+        <a href="contact.html" class="btn">Place an Order</a>
+      </div>
+    </header>
+
+    <!-- Services Section -->
+    <section class="services">
+      <h2 class="fade-in-up">Our Masterpieces</h2>
+      <p class="fade-in-up delay-1">Handcrafted specially for you</p>
+
+      <div class="cards" id="categoryContainer">
+        <!-- Clicking a card loads the gallery SPA -->
+        <div class="card fade-in-up" onclick="openGallery('pencil_carving')" style="cursor: pointer;">
+          <div class="card-img-wrapper">
+            <img src="assets/images/pencilcarving.png" alt="Pencil Carving" onerror="this.style.display='none'">
+          </div>
+          <h3>Pencil Carving</h3>
+          <p>Names, quotes & microscopic art intricately carved on graphite.</p>
+        </div>
+
+        <div class="card fade-in-up delay-1" onclick="openGallery('frames')" style="cursor: pointer;">
+          <div class="card-img-wrapper">
+            <img src="assets/images/frame.jpg" alt="Custom Frame" onerror="this.style.display='none'">
+          </div>
+          <h3>Custom Frames</h3>
+          <p>Combine photos, quotes, and carvings beautifully framed forever.</p>
+        </div>
+
+        <div class="card fade-in-up delay-2" onclick="openGallery('chocolates')" style="cursor: pointer;">
+          <div class="card-img-wrapper">
+            <img src="assets/images/chocolate.jpg" alt="Custom Chocolates" onerror="this.style.display='none'">
+          </div>
+          <h3>Custom Chocolates</h3>
+          <p>Delicious treats re-wrapped with your personal message or design.</p>
+        </div>
+
+        <div class="card fade-in-up delay-3" onclick="openGallery('hampers')" style="cursor: pointer;">
+          <div class="card-img-wrapper">
+            <img src="assets/images/hamper.png" alt="Gift Hampers" onerror="this.style.display='none'">
+          </div>
+          <h3>Gift Hampers</h3>
+          <p>A curated sea of premium gifts made specially for your chosen one.</p>
+        </div>
+
+        <div class="card fade-in-up delay-3" onclick="openGallery('portraits')" style="cursor: pointer;">
+          <div class="card-img-wrapper">
+            <!-- A placeholder for portraits -->
+            <img src="assets/images/portrait.jpg" alt="Portraits"
+              onerror="this.src='https://images.unsplash.com/photo-1544723795-3c1a329d4c76?q=80&w=600'">
+          </div>
+          <h3>Portraits</h3>
+          <p>Stunning, detailed handcrafted portraits bringing subjects strictly to life.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="cta">
+      <video class="cta-video" autoplay loop muted playsinline>
+        <source src="assets/vid/v2.mp4" type="video/mp4">
+      </video>
+      <div class="cta-overlay"></div>
+      <div class="fade-in-up" style="position: relative; z-index: 2;">
+        <h2>Make Their Day Special</h2>
+        <p>Delivered securely across India with absolute love and creativity 💝</p>
+        <a href="https://wa.me/916381263884?text=hi+may+i+know+more+about+your+gift+ideas+in+pencil_._carving+%3F%3F"
+          class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Contact via WhatsApp</a>
+      </div>
+    </section>
+
+    <footer>
+      <p>© 2025 Ponmudi Creations. All rights reserved.</p>
+      <p style="font-size: 0.8rem; opacity: 0.6;">Crafting memories, one gift at a time.</p>
+    </footer>
+  </div>
+
+  <!-- GALLERY SECTION (HIDDEN BY DEFAULT) -->
+  <div id="gallery-section" class="page-section">
+    <div class="about-header" style="height: 35vh; background: var(--primary);">
+      <h1 class="fade-in-up" id="gallery-title" style="background: none; -webkit-text-fill-color: white;">Gallery</h1>
+    </div>
+
+    <div class="about-container fade-in-up delay-1" style="max-width: 1400px; text-align: center;">
+
+      <!-- Improved Solid Back Button Style -->
+      <a class="btn" style="
+        margin-bottom: 3.5rem; 
+        background: var(--primary); 
+        color: white; 
+        border: none; 
+        font-weight: 600; 
+        padding: 0.85rem 2.5rem; 
+        border-radius: 50px; 
+        font-family: var(--font-body); 
+        display: inline-flex; 
+        align-items: center; 
+        gap: 12px; 
+        cursor: pointer; 
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
+        box-shadow: 0 5px 15px rgba(196, 95, 101, 0.3);
+        text-decoration: none;"
+        onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 25px rgba(196, 95, 101, 0.5)';"
+        onmouseout="this.style.transform='none'; this.style.boxShadow='0 5px 15px rgba(196, 95, 101, 0.3)';"
+        onclick="showSection('home')">
+        <span style="font-size: 1.4rem; padding-bottom: 3px;">&larr;</span> Back to Masterpieces
+      </a>
+
+      <!-- Grid where dynamic images will be injected -->
+      <div id="gallery-grid" class="masonry-grid">
+        <!-- Populated via JS -->
+      </div>
+    </div>
+    <footer>
+      <p>© 2025 Ponmudi Creations. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- ABOUT SECTION -->
+  <div id="about-section" class="page-section">
+    <div class="about-header">
+      <h1 class="fade-in-up">The Story Below</h1>
+    </div>
+
+    <div class="about-container fade-in-up delay-1">
+      <!-- Introduction -->
+      <section class="about-section">
+        <h2>Who I Am</h2>
+        <p>Hi! I'm a young entrepreneur and creative soul who believes in turning everyday moments into treasured
+          memories. What started as a hobby has blossomed into my true passion — creating handmade, personalized gifts
+          that touch hearts and last forever.</p>
+      </section>
+
+      <!-- Mission & Vision -->
+      <section class="about-section" style="background:transparent; box-shadow:none; padding:0;">
+        <h2 style="margin-left: 20px;">Our Mission & Vision</h2>
+        <div class="mission-box">
+          <div class="mission-item">
+            <h3>Our Mission</h3>
+            <p>To create highly affordable, exceptional quality, personalized gifts that make people feel deeply valued
+              and remembered long after the moment passes.</p>
+          </div>
+          <div class="mission-item">
+            <h3>Our Vision</h3>
+            <p>To be the premier go-to destination across India for anyone looking for that heartfelt, unique gift that
+              truly, profoundly says "I care."</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Closing -->
+      <section class="about-section closing-section">
+        <h2>Let's Create Magic Together</h2>
+        <p>Whether it's for your best friend, your soulmate, your parent, or yourself – we're ready to make it
+          unforgettable.</p>
+        <a href="contact.html" class="btn">Start Your Custom Order Now</a>
+      </section>
+    </div>
+
+    <footer>
+      <p>© 2025 Ponmudi Creations. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script>
+    // --- Page Routing Logic ---
+    function showSection(sectionId) {
+      const sections = ['home', 'about', 'gallery'];
+
+      sections.forEach(sec => {
+        const el = document.getElementById(sec + '-section');
+        if (sec === sectionId) {
+          el.classList.add('active');
+        } else {
+          el.classList.remove('active');
+        }
+      });
+
+      const aboutLink = document.getElementById('aboutLink');
+      const profileMenu = document.getElementById('profileMenu');
+      if (profileMenu) profileMenu.style.display = 'none';
+
+      if (sectionId === 'about') {
+        aboutLink.classList.add('on-about');
+        aboutLink.textContent = 'Go to Home';
+      } else {
+        aboutLink.classList.remove('on-about');
+        aboutLink.textContent = 'About Me';
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function handleAboutClick() {
+      const aboutLink = document.getElementById('aboutLink');
+      if (aboutLink.classList.contains('on-about')) {
+        showSection('home');
+      } else {
+        showSection('about');
+      }
+    }
+
+    // --- Dynamic Gallery Logic (GitHub API Powered) ---
+    const GITHUB_USER = 'ponmudii';
+    const GITHUB_REPO = 'pencil_._carving';
+    const GITHUB_BRANCH = 'main';
+    const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+
+    const galleryData = {
+      'pencil_carving': { title: 'Pencil Carving Masterpieces', path: 'assets/Carvings' },
+      'frames': { title: 'Custom Frames', path: 'assets/Frames' },
+      'chocolates': { title: 'Custom Chocolates', path: 'assets/Chocolates' },
+      'hampers': { title: 'Gift Hampers', path: 'assets/Hampers' },
+      'portraits': { title: 'Handcrafted Portraits', path: 'assets/potraits' }
+    };
+
+    // Extract the price from a filename like "1-250.jpg" → "Rs. 250"
+    // If no price pattern found (e.g. "1.jpg"), returns null
+    function extractPrice(filename) {
+      // Remove extension first: "1-250.jpg" → "1-250"
+      const nameOnly = filename.replace(/\.[^.]+$/, '');
+      // Match pattern: anything-PRICE  (e.g. "1-250", "3p-599")
+      const match = nameOnly.match(/-(\d+)$/);
+      if (match) return 'Rs. ' + match[1];
+      return null;
+    }
+
+    // Extract the sort key from a filename: "2p-300.jpg" → "2p", "5-120.jpg" → 5
+    function extractSortKey(filename) {
+      const nameOnly = filename.replace(/\.[^.]+$/, '');
+      const base = nameOnly.split('-')[0]; // "2p" or "5"
+      // Check if it's a pinned file (ends with 'p')
+      if (base.endsWith('p')) return { pinned: true, num: parseInt(base) };
+      return { pinned: false, num: parseInt(base) || 999 };
+    }
+
+    // Fetch folder contents from GitHub API
+    async function fetchGitHubFolder(folderPath) {
+      const url = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${folderPath}?ref=${GITHUB_BRANCH}`;
+      try {
+        const response = await fetch(url);
+        if (!response.ok) return [];
+        const files = await response.json();
+        if (!Array.isArray(files)) return [];
+        // Filter only image files
+        return files.filter(f => {
+          const ext = f.name.split('.').pop().toLowerCase();
+          return f.type === 'file' && IMAGE_EXTENSIONS.includes(ext);
+        });
+      } catch (e) {
+        console.error('GitHub API error:', e);
+        return [];
+      }
+    }
+
+    async function openGallery(categoryId) {
+      const data = galleryData[categoryId];
+      if (!data) return;
+
+      document.getElementById('gallery-title').textContent = data.title;
+      const grid = document.getElementById('gallery-grid');
+
+      // Show loading state
+      grid.innerHTML = '<div style="width:100%; text-align:center; padding: 4rem 1rem; color:var(--text-muted); grid-column: 1 / -1;">Loading photos...</div>';
+      showSection('gallery');
+
+      // Fetch the real file list from GitHub API
+      const files = await fetchGitHubFolder(data.path);
+
+      // Sort: pinned files (1p, 2p...) first in ascending order, then regular files descending
+      const sorted = files.map(f => ({
+        name: f.name,
+        localPath: `${data.path}/${f.name}`,
+        ...extractSortKey(f.name)
+      })).sort((a, b) => {
+        if (a.pinned && !b.pinned) return -1;  // Pinned always first
+        if (!a.pinned && b.pinned) return 1;
+        if (a.pinned && b.pinned) return a.num - b.num;  // Pinned: ascending (1p, 2p, 3p)
+        return b.num - a.num;  // Regular: descending (newest first)
+      });
+
+      // Build the images list with paths and prices
+      const imagesList = sorted.map(f => ({
+        path: f.localPath,
+        price: extractPrice(f.name) || 'Rs. 000'
+      }));
+
+      grid.innerHTML = ''; // Clear loading text
+
+      if (imagesList.length === 0) {
+        grid.innerHTML = `<div style="width:100%; text-align:center; padding: 4rem 1rem; color:var(--text-muted); grid-column: 1 / -1;">No images yet found in ${data.path}!</div>`;
+        return;
+      }
+
+      // Inject images perfectly to the grid
+      imagesList.forEach((item, index) => {
+        const filename = item.path;
+        const price = item.price;
+        const wrapper = document.createElement('div');
+        wrapper.className = 'gallery-wrapper'; // Links to CSS
+        // Apply beautiful bespoke Polaroid Styling with Text Area
+        wrapper.style.opacity = '0'; // Start hidden for animation
+        wrapper.style.animation = `fadeInBase 0.6s ease forwards ${index * 0.05}s`;
+        wrapper.style.backgroundColor = '#FFFFFF';
+        wrapper.style.padding = '12px'; // Uniform padding
+        wrapper.style.display = 'flex';
+        wrapper.style.flexDirection = 'column';
+        wrapper.style.borderRadius = '4px'; // Classic straight-cut polaroid border
+        wrapper.style.boxShadow = '0 8px 25px rgba(0,0,0,0.08)';
+        wrapper.style.cursor = 'pointer';
+        wrapper.style.border = '1px solid rgba(0,0,0,0.04)';
+        wrapper.style.transition = 'transform 0.4s ease, box-shadow 0.4s ease';
+
+        wrapper.onmouseover = function () {
+          this.style.transform = 'translateY(-10px) scale(1.02)';
+          this.style.boxShadow = '0 15px 35px rgba(0,0,0,0.15)';
+          this.style.borderColor = 'rgba(196, 95, 101, 0.3)';
+        };
+        wrapper.onmouseout = function () {
+          this.style.transform = 'none';
+          this.style.boxShadow = '0 8px 25px rgba(0,0,0,0.08)';
+          this.style.borderColor = 'rgba(0,0,0,0.04)';
+        };
+
+        const imgWrap = document.createElement('div');
+        imgWrap.className = 'gallery-img-wrap'; // Explicit class mapping sweep glare
+        imgWrap.style.position = 'relative'; // Retains the sweep layer within border
+        imgWrap.style.width = '100%';
+        imgWrap.style.aspectRatio = '1 / 1'; // Pure 1:1 Square explicitly ONLY for inside gallery!
+        imgWrap.style.height = 'auto';
+        imgWrap.style.overflow = 'hidden';
+        imgWrap.style.borderRadius = '0px'; // Razor sharp classic inner photograph line
+        imgWrap.style.marginBottom = '15px'; // Creates the bottom whitespace for text
+
+        const imgEl = document.createElement('img');
+        const imgPath = filename; // filename already includes mapped paths!
+
+        imgEl.src = imgPath;
+        imgEl.alt = `${data.title} - ${filename}`;
+        imgEl.style.width = '100%';
+        imgEl.style.height = '100%';
+        imgEl.style.objectFit = 'cover';
+        imgEl.style.display = 'block'; // Ensure no weird text spacing
+
+        // Beautiful fallback if local image is missing
+        imgEl.onerror = function () {
+          this.src = 'https://images.unsplash.com/photo-1513201099705-a9746e1e201f?q=80&w=400';
+          this.alt = 'Placeholder Image';
+        };
+
+        // Create Text details for the bottom whitespace area
+        const detailsWrap = document.createElement('div');
+        detailsWrap.style.display = 'flex';
+        detailsWrap.style.justifyContent = 'space-between';
+        detailsWrap.style.alignItems = 'flex-start';
+        detailsWrap.style.padding = '0 5px 8px'; // 8px bottom pad ensures balanced look
+
+        const leftBox = document.createElement('div');
+        leftBox.style.display = 'flex';
+        leftBox.style.flexDirection = 'column';
+        leftBox.style.alignItems = 'flex-start';
+        leftBox.style.textAlign = 'left'; // Forces text to left-align instead of center
+        leftBox.style.flex = '1';
+        leftBox.style.paddingRight = '10px'; // Prevent bumping price
+
+        const titleEl = document.createElement('h4');
+        titleEl.textContent = 'Premium Masterpiece Art'; // 3 words
+        titleEl.style.fontFamily = 'var(--font-heading)';
+        titleEl.style.fontSize = '1.15rem'; // slightly smaller to prevent aggressive wrapping
+        titleEl.style.margin = '0 0 4px 0';
+        titleEl.style.color = 'var(--text-main)';
+        titleEl.style.fontWeight = '700';
+        titleEl.style.lineHeight = '1.2';
+
+        const subtitleEl = document.createElement('span');
+        subtitleEl.textContent = 'Handcrafted with extreme precision';
+        subtitleEl.style.fontFamily = 'var(--font-body)';
+        subtitleEl.style.fontSize = '13.5px';
+        subtitleEl.style.color = 'var(--text-muted)';
+        subtitleEl.style.lineHeight = '1.4';
+
+        leftBox.appendChild(titleEl);
+        leftBox.appendChild(subtitleEl);
+
+        const priceEl = document.createElement('span');
+        priceEl.textContent = price; // Extracted automatically from filename (e.g. 1-250.jpg → Rs. 250)
+        priceEl.style.fontFamily = 'var(--font-body)';
+        priceEl.style.fontSize = '1.15rem';
+        priceEl.style.fontWeight = '600';
+        priceEl.style.color = 'var(--primary)';
+        priceEl.style.marginTop = '4px';
+        priceEl.style.whiteSpace = 'nowrap';
+        priceEl.style.flexShrink = '0';
+
+        detailsWrap.appendChild(leftBox);
+        detailsWrap.appendChild(priceEl);
+
+        imgWrap.appendChild(imgEl);
+        wrapper.appendChild(imgWrap);
+        wrapper.appendChild(detailsWrap);
+        grid.appendChild(wrapper);
+      });
+
+      showSection('gallery');
+    }
+
+    // --- Intersection Observer (Scroll effects) ---
+    document.addEventListener("DOMContentLoaded", () => {
+      const observer = new IntersectionObserver((entries, ob) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            ob.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15 });
+
+      document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
+
+      // === Smooth Cross-Fade Background Slideshow ===
+      // Images live in assets/b.loop/1.jpg → 6.jpg
+      // We probe which ones exist, then cycle with opacity transitions
+      (function initSlideshow() {
+        const header = document.querySelector('.header');
+        if (!header) return;
+
+        const bgImages = [
+          'assets/b.loop/5.png',
+          'assets/b.loop/1.avif',
+          'assets/b.loop/3.jpg',
+          'assets/b.loop/2.avif',
+          'assets/b.loop/6.avif',
+          'assets/b.loop/7.avif',
+          'assets/b.loop/4.avif',
+          'assets/b.loop/8.jpg'
+        ];
+
+        // Pre-create stacked slide layers inside header
+        const slides = bgImages.map(src => {
+          const div = document.createElement('div');
+          div.className = 'bg-slide';
+          div.style.backgroundImage = `url('${src}')`;
+          header.insertBefore(div, header.firstChild);
+          return div;
+        });
+
+        let current = 0;
+        slides[0].classList.add('active'); // Show first
+
+        setInterval(() => {
+          slides[current].classList.remove('active');
+          current = (current + 1) % slides.length;
+          slides[current].classList.add('active');
+        }, 2500); // Change every 2.5 seconds, triggering chroma stomp
+      })();
+
+    });
+  </script>
+</body>
+
+</html>
