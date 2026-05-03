@@ -286,7 +286,7 @@
     const GITHUB_USER = 'ponmudii';
     const GITHUB_REPO = 'pencil_._carving';
     const GITHUB_BRANCH = 'main';
-    const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+    const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'heic'];
 
     const galleryData = {
       'pencil_carving': { title: 'Pencil Carving Masterpieces', path: 'assets/Carvings' },
@@ -305,7 +305,7 @@
       const parts = nameOnly.split('-'); // Split by hyphen
 
       const idPart = parts[0] || '999';
-      
+
       let isHover = false;
       let hoverNum = 0;
       let priceIndex = 1;
@@ -476,8 +476,8 @@
         mainImg.style.height = '100%';
         mainImg.style.objectFit = 'cover';
         mainImg.style.display = 'block';
-        mainImg.style.transition = 'opacity 0.5s ease, transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)'; 
-        
+        mainImg.style.transition = 'opacity 0.5s ease, transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)';
+
         mainImg.onerror = function () {
           this.src = 'https://images.unsplash.com/photo-1513201099705-a9746e1e201f?q=80&w=400';
           this.alt = 'Placeholder Image';
@@ -488,22 +488,22 @@
         // Add hover images
         const hoverImgs = [];
         if (item.hovers && item.hovers.length > 0) {
-            item.hovers.forEach(hPath => {
-                const hImg = document.createElement('img');
-                hImg.src = hPath;
-                hImg.style.width = '100%';
-                hImg.style.height = '100%';
-                hImg.style.objectFit = 'cover';
-                hImg.style.display = 'block';
-                hImg.style.position = 'absolute';
-                hImg.style.top = '0';
-                hImg.style.left = '0';
-                hImg.style.opacity = '0';
-                hImg.style.transform = 'scale(1)';
-                hImg.style.transition = 'opacity 0.5s ease, transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)'; // Smooth fast breathing
-                imgWrap.appendChild(hImg);
-                hoverImgs.push(hImg);
-            });
+          item.hovers.forEach(hPath => {
+            const hImg = document.createElement('img');
+            hImg.src = hPath;
+            hImg.style.width = '100%';
+            hImg.style.height = '100%';
+            hImg.style.objectFit = 'cover';
+            hImg.style.display = 'block';
+            hImg.style.position = 'absolute';
+            hImg.style.top = '0';
+            hImg.style.left = '0';
+            hImg.style.opacity = '0';
+            hImg.style.transform = 'scale(1)';
+            hImg.style.transition = 'opacity 0.5s ease, transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)'; // Smooth fast breathing
+            imgWrap.appendChild(hImg);
+            hoverImgs.push(hImg);
+          });
         }
 
         let hoverInterval;
@@ -513,25 +513,25 @@
           this.style.transform = 'translateY(-10px) scale(1.02)';
           this.style.boxShadow = '0 15px 35px rgba(0,0,0,0.15)';
           this.style.borderColor = 'rgba(196, 95, 101, 0.3)';
-          
-          if (hoverImgs.length > 0) {
-             hoverIndex = 0;
-             hoverImgs.forEach((img, i) => {
-                 img.style.opacity = (i === hoverIndex) ? '1' : '0';
-                 img.style.transform = (i === hoverIndex) ? 'scale(1.15)' : 'scale(1)';
-             });
-             mainImg.style.opacity = '0'; // hide main
-             mainImg.style.transform = 'scale(1)'; // reset main zoom
 
-             hoverInterval = setInterval(() => {
-                 hoverIndex = (hoverIndex + 1) % hoverImgs.length;
-                 hoverImgs.forEach((img, i) => {
-                     img.style.opacity = (i === hoverIndex) ? '1' : '0';
-                     img.style.transform = (i === hoverIndex) ? 'scale(1.15)' : 'scale(1)';
-                 });
-             }, 1000);
+          if (hoverImgs.length > 0) {
+            hoverIndex = 0;
+            hoverImgs.forEach((img, i) => {
+              img.style.opacity = (i === hoverIndex) ? '1' : '0';
+              img.style.transform = (i === hoverIndex) ? 'scale(1.15)' : 'scale(1)';
+            });
+            mainImg.style.opacity = '0'; // hide main
+            mainImg.style.transform = 'scale(1)'; // reset main zoom
+
+            hoverInterval = setInterval(() => {
+              hoverIndex = (hoverIndex + 1) % hoverImgs.length;
+              hoverImgs.forEach((img, i) => {
+                img.style.opacity = (i === hoverIndex) ? '1' : '0';
+                img.style.transform = (i === hoverIndex) ? 'scale(1.15)' : 'scale(1)';
+              });
+            }, 1000);
           } else {
-             mainImg.style.transform = 'scale(1.5)'; // 50% zoom as requested
+            mainImg.style.transform = 'scale(1.5)'; // 50% zoom as requested
           }
         };
 
@@ -541,14 +541,14 @@
           this.style.borderColor = 'rgba(0,0,0,0.04)';
 
           if (hoverImgs.length > 0) {
-             clearInterval(hoverInterval);
-             hoverImgs.forEach(img => {
-                 img.style.opacity = '0';
-                 img.style.transform = 'scale(1)';
-             });
-             mainImg.style.opacity = '1';
+            clearInterval(hoverInterval);
+            hoverImgs.forEach(img => {
+              img.style.opacity = '0';
+              img.style.transform = 'scale(1)';
+            });
+            mainImg.style.opacity = '1';
           } else {
-             mainImg.style.transform = 'scale(1)';
+            mainImg.style.transform = 'scale(1)';
           }
         };
 
