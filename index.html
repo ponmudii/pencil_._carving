@@ -468,16 +468,43 @@
         imgWrap.style.borderRadius = '0px'; // Razor sharp classic inner photograph line
         imgWrap.style.marginBottom = '15px'; // Creates the bottom whitespace for text
 
-        const imgEl = document.createElement('img');
-        const imgPath = filename; // filename already includes mapped paths!
+        // Add main image
+        const mainImg = document.createElement('img');
+        mainImg.src = filename;
+        mainImg.alt = `${data.title} - ${item.title}`;
+        mainImg.style.width = '100%';
+        mainImg.style.height = '100%';
+        mainImg.style.objectFit = 'cover';
+        mainImg.style.display = 'block';
+        mainImg.style.transition = 'opacity 0.5s ease, transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)'; 
+        
+        mainImg.onerror = function () {
+          this.src = 'https://images.unsplash.com/photo-1513201099705-a9746e1e201f?q=80&w=400';
+          this.alt = 'Placeholder Image';
+        };
 
-        imgEl.src = imgPath;
-        imgEl.alt = `${data.title} - ${item.title}`;
-        imgEl.style.width = '100%';
-        imgEl.style.height = '100%';
-        imgEl.style.objectFit = 'cover';
-        imgEl.style.display = 'block'; // Ensure no weird text spacing
-        imgEl.style.transition = 'transform 0.4s ease'; // Ensure smooth zoom on hover
+        imgWrap.appendChild(mainImg);
+
+        // Add hover images
+        const hoverImgs = [];
+        if (item.hovers && item.hovers.length > 0) {
+            item.hovers.forEach(hPath => {
+                const hImg = document.createElement('img');
+                hImg.src = hPath;
+                hImg.style.width = '100%';
+                hImg.style.height = '100%';
+                hImg.style.objectFit = 'cover';
+                hImg.style.display = 'block';
+                hImg.style.position = 'absolute';
+                hImg.style.top = '0';
+                hImg.style.left = '0';
+                hImg.style.opacity = '0';
+                hImg.style.transform = 'scale(1)';
+                hImg.style.transition = 'opacity 0.5s ease, transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)'; // Smooth fast breathing
+                imgWrap.appendChild(hImg);
+                hoverImgs.push(hImg);
+            });
+        }
 
         let hoverInterval;
         let hoverIndex = -1;
@@ -487,15 +514,24 @@
           this.style.boxShadow = '0 15px 35px rgba(0,0,0,0.15)';
           this.style.borderColor = 'rgba(196, 95, 101, 0.3)';
           
-          if (item.hovers && item.hovers.length > 0) {
+          if (hoverImgs.length > 0) {
              hoverIndex = 0;
-             imgEl.src = item.hovers[hoverIndex];
+             hoverImgs.forEach((img, i) => {
+                 img.style.opacity = (i === hoverIndex) ? '1' : '0';
+                 img.style.transform = (i === hoverIndex) ? 'scale(1.15)' : 'scale(1)';
+             });
+             mainImg.style.opacity = '0'; // hide main
+             mainImg.style.transform = 'scale(1)'; // reset main zoom
+
              hoverInterval = setInterval(() => {
-                 hoverIndex = (hoverIndex + 1) % item.hovers.length;
-                 imgEl.src = item.hovers[hoverIndex];
+                 hoverIndex = (hoverIndex + 1) % hoverImgs.length;
+                 hoverImgs.forEach((img, i) => {
+                     img.style.opacity = (i === hoverIndex) ? '1' : '0';
+                     img.style.transform = (i === hoverIndex) ? 'scale(1.15)' : 'scale(1)';
+                 });
              }, 1000);
           } else {
-             imgEl.style.transform = 'scale(1.2)';
+             mainImg.style.transform = 'scale(1.15)'; // Match the new breath scale
           }
         };
 
@@ -504,18 +540,16 @@
           this.style.boxShadow = '0 8px 25px rgba(0,0,0,0.08)';
           this.style.borderColor = 'rgba(0,0,0,0.04)';
 
-          if (item.hovers && item.hovers.length > 0) {
+          if (hoverImgs.length > 0) {
              clearInterval(hoverInterval);
-             imgEl.src = imgPath;
+             hoverImgs.forEach(img => {
+                 img.style.opacity = '0';
+                 img.style.transform = 'scale(1)';
+             });
+             mainImg.style.opacity = '1';
           } else {
-             imgEl.style.transform = 'scale(1)';
+             mainImg.style.transform = 'scale(1)';
           }
-        };
-
-        // Beautiful fallback if local image is missing
-        imgEl.onerror = function () {
-          this.src = 'https://images.unsplash.com/photo-1513201099705-a9746e1e201f?q=80&w=400';
-          this.alt = 'Placeholder Image';
         };
 
         // Create Text details for the bottom whitespace area
@@ -565,7 +599,6 @@
         detailsWrap.appendChild(leftBox);
         detailsWrap.appendChild(priceEl);
 
-        imgWrap.appendChild(imgEl);
         wrapper.appendChild(imgWrap);
         wrapper.appendChild(detailsWrap);
         grid.appendChild(wrapper);
