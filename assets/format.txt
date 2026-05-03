@@ -10,6 +10,11 @@ Result: Price: Rs. 250 | Title: Lord Ganesha | Subtitle: Micro Pencil Art
 
 
 
+Hover Images: 11-h1-250-Lord_Ganesha-Micro_Pencil_Art.jpg
+(You can add -h1, -h2, etc., after the ID to create rotating hover images)
+
+
+
 Reminder:
 Don't forget to Push your changes to GitHub after renaming them locally! Once you push, the website will update immediately with the new names and prices.
 

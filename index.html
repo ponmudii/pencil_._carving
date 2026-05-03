@@ -207,7 +207,7 @@
 
   <script>
     // --- Page Routing Logic ---
-    function showSection(sectionId) {
+    function showSection(sectionId, pushToHistory = true) {
       const sections = ['home', 'about', 'gallery'];
 
       sections.forEach(sec => {
@@ -232,6 +232,10 @@
       }
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (pushToHistory) {
+        history.pushState({ section: sectionId }, '', `#${sectionId}`);
+      }
     }
 
     function handleAboutClick() {
@@ -242,6 +246,41 @@
         showSection('about');
       }
     }
+
+    window.addEventListener('popstate', function (event) {
+      if (event.state) {
+        if (event.state.section === 'gallery' && event.state.categoryId) {
+          openGallery(event.state.categoryId, false);
+        } else if (event.state.section) {
+          showSection(event.state.section, false);
+        }
+      } else {
+        showSection('home', false);
+      }
+    });
+
+    window.addEventListener('load', function () {
+      if (!history.state) {
+        let hash = window.location.hash;
+        if (hash.startsWith('#gallery-')) {
+          let cat = hash.replace('#gallery-', '');
+          history.replaceState({ section: 'gallery', categoryId: cat }, '', hash);
+          openGallery(cat, false);
+        } else if (hash === '#about') {
+          history.replaceState({ section: 'about' }, '', hash);
+          showSection('about', false);
+        } else {
+          history.replaceState({ section: 'home' }, '', '#home');
+          showSection('home', false);
+        }
+      } else {
+        if (history.state.section === 'gallery' && history.state.categoryId) {
+          openGallery(history.state.categoryId, false);
+        } else if (history.state.section) {
+          showSection(history.state.section, false);
+        }
+      }
+    });
 
     // --- Dynamic Gallery Logic (GitHub API Powered) ---
     const GITHUB_USER = 'ponmudii';
@@ -257,17 +296,29 @@
       'portraits': { title: 'Handcrafted Portraits', path: 'assets/potraits' }
     };
 
-    // New Robust filename parsing: "ID-PRICE-TITLE-SUBTITLE.jpg"
+    // New Robust filename parsing: "ID-PRICE-TITLE-SUBTITLE.jpg" or "ID-hX-PRICE-TITLE-SUBTITLE.jpg"
     // Examples: "1-250.jpg", "9-179-Couple_Initials.jpg", "11-250-Ganesha-Micro_Art.jpg"
+    // Hover Examples: "1-h1-250.jpg", "11-h2-250-Ganesha-Micro_Art.jpg"
 
     function parseFileName(filename) {
       const nameOnly = filename.replace(/\.[^.]+$/, '');
       const parts = nameOnly.split('-'); // Split by hyphen
 
       const idPart = parts[0] || '999';
-      const pricePart = parts[1] || null;
-      const titlePart = parts[2] ? parts[2].replace(/_/g, ' ') : 'Handcrafted Masterpiece';
-      const subtitlePart = parts[3] ? parts[3].replace(/_/g, ' ') : 'Specially made for you';
+      
+      let isHover = false;
+      let hoverNum = 0;
+      let priceIndex = 1;
+
+      if (parts[1] && /^h[0-9]+$/i.test(parts[1])) {
+        isHover = true;
+        hoverNum = parseInt(parts[1].substring(1));
+        priceIndex = 2;
+      }
+
+      const pricePart = parts[priceIndex] || null;
+      const titlePart = parts[priceIndex + 1] ? parts[priceIndex + 1].replace(/_/g, ' ') : 'Handcrafted Masterpiece';
+      const subtitlePart = parts[priceIndex + 2] ? parts[priceIndex + 2].replace(/_/g, ' ') : 'Specially made for you';
 
       // Sort logic
       let pinned = false;
@@ -280,6 +331,9 @@
       }
 
       return {
+        idPart,
+        isHover,
+        hoverNum,
         pinned,
         num,
         price: pricePart ? 'Rs. ' + pricePart : 'Rs. 000',
@@ -309,7 +363,11 @@
       }
     }
 
-    async function openGallery(categoryId) {
+    async function openGallery(categoryId, pushToHistory = true) {
+      if (pushToHistory) {
+        history.pushState({ section: 'gallery', categoryId: categoryId }, '', `#gallery-${categoryId}`);
+      }
+
       const data = galleryData[categoryId];
       if (!data) return;
 
@@ -318,29 +376,60 @@
 
       // Show loading state
       grid.innerHTML = '<div style="width:100%; text-align:center; padding: 4rem 1rem; color:var(--text-muted); grid-column: 1 / -1;">Loading photos...</div>';
-      showSection('gallery');
+      showSection('gallery', false);
 
       // Fetch the real file list from GitHub API
       const files = await fetchGitHubFolder(data.path);
 
+      const grouped = {};
+      files.forEach(f => {
+        const meta = parseFileName(f.name);
+        const idKey = meta.idPart;
+        if (!grouped[idKey]) {
+          grouped[idKey] = { main: null, hovers: [] };
+        }
+        if (meta.isHover) {
+          grouped[idKey].hovers.push({
+            name: f.name,
+            localPath: `${data.path}/${f.name}`,
+            meta: meta
+          });
+        } else {
+          grouped[idKey].main = {
+            name: f.name,
+            localPath: `${data.path}/${f.name}`,
+            meta: meta
+          };
+        }
+      });
+
+      const validProducts = [];
+      Object.values(grouped).forEach(prod => {
+        if (prod.main) {
+          prod.hovers.sort((a, b) => a.meta.hoverNum - b.meta.hoverNum);
+          validProducts.push(prod);
+        } else if (prod.hovers.length > 0) {
+          prod.hovers.sort((a, b) => a.meta.hoverNum - b.meta.hoverNum);
+          prod.main = prod.hovers.shift();
+          validProducts.push(prod);
+        }
+      });
+
       // Sort: pinned files (1p, 2p...) first in ascending order, then regular files descending
-      const sorted = files.map(f => ({
-        name: f.name,
-        localPath: `${data.path}/${f.name}`,
-        meta: parseFileName(f.name)
-      })).sort((a, b) => {
-        if (a.meta.pinned && !b.meta.pinned) return -1;
-        if (!a.meta.pinned && b.meta.pinned) return 1;
-        if (a.meta.pinned && b.meta.pinned) return a.meta.num - b.meta.num;
-        return b.meta.num - a.meta.num;
+      validProducts.sort((a, b) => {
+        if (a.main.meta.pinned && !b.main.meta.pinned) return -1;
+        if (!a.main.meta.pinned && b.main.meta.pinned) return 1;
+        if (a.main.meta.pinned && b.main.meta.pinned) return a.main.meta.num - b.main.meta.num;
+        return b.main.meta.num - a.main.meta.num;
       });
 
       // Build the images list with direct GitHub Raw paths and extracted metadata
-      const imagesList = sorted.map(f => ({
-        path: `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${f.localPath}`,
-        price: f.meta.price,
-        title: f.meta.title,
-        subtitle: f.meta.subtitle
+      const imagesList = validProducts.map(prod => ({
+        path: `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${prod.main.localPath}`,
+        price: prod.main.meta.price,
+        title: prod.main.meta.title,
+        subtitle: prod.main.meta.subtitle,
+        hovers: prod.hovers.map(h => `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${h.localPath}`)
       }));
 
       grid.innerHTML = ''; // Clear loading text
@@ -369,17 +458,6 @@
         wrapper.style.border = '1px solid rgba(0,0,0,0.04)';
         wrapper.style.transition = 'transform 0.4s ease, box-shadow 0.4s ease';
 
-        wrapper.onmouseover = function () {
-          this.style.transform = 'translateY(-10px) scale(1.02)';
-          this.style.boxShadow = '0 15px 35px rgba(0,0,0,0.15)';
-          this.style.borderColor = 'rgba(196, 95, 101, 0.3)';
-        };
-        wrapper.onmouseout = function () {
-          this.style.transform = 'none';
-          this.style.boxShadow = '0 8px 25px rgba(0,0,0,0.08)';
-          this.style.borderColor = 'rgba(0,0,0,0.04)';
-        };
-
         const imgWrap = document.createElement('div');
         imgWrap.className = 'gallery-img-wrap'; // Explicit class mapping sweep glare
         imgWrap.style.position = 'relative'; // Retains the sweep layer within border
@@ -394,11 +472,45 @@
         const imgPath = filename; // filename already includes mapped paths!
 
         imgEl.src = imgPath;
-        imgEl.alt = `${data.title} - ${filename}`;
+        imgEl.alt = `${data.title} - ${item.title}`;
         imgEl.style.width = '100%';
         imgEl.style.height = '100%';
         imgEl.style.objectFit = 'cover';
         imgEl.style.display = 'block'; // Ensure no weird text spacing
+        imgEl.style.transition = 'transform 0.4s ease'; // Ensure smooth zoom on hover
+
+        let hoverInterval;
+        let hoverIndex = -1;
+
+        wrapper.onmouseenter = function () {
+          this.style.transform = 'translateY(-10px) scale(1.02)';
+          this.style.boxShadow = '0 15px 35px rgba(0,0,0,0.15)';
+          this.style.borderColor = 'rgba(196, 95, 101, 0.3)';
+          
+          if (item.hovers && item.hovers.length > 0) {
+             hoverIndex = 0;
+             imgEl.src = item.hovers[hoverIndex];
+             hoverInterval = setInterval(() => {
+                 hoverIndex = (hoverIndex + 1) % item.hovers.length;
+                 imgEl.src = item.hovers[hoverIndex];
+             }, 2000);
+          } else {
+             imgEl.style.transform = 'scale(1.2)';
+          }
+        };
+
+        wrapper.onmouseleave = function () {
+          this.style.transform = 'none';
+          this.style.boxShadow = '0 8px 25px rgba(0,0,0,0.08)';
+          this.style.borderColor = 'rgba(0,0,0,0.04)';
+
+          if (item.hovers && item.hovers.length > 0) {
+             clearInterval(hoverInterval);
+             imgEl.src = imgPath;
+          } else {
+             imgEl.style.transform = 'scale(1)';
+          }
+        };
 
         // Beautiful fallback if local image is missing
         imgEl.onerror = function () {
@@ -459,7 +571,7 @@
         grid.appendChild(wrapper);
       });
 
-      showSection('gallery');
+      showSection('gallery', false);
     }
 
     // --- Intersection Observer (Scroll effects) ---
