@@ -392,12 +392,15 @@
           grouped[idKey].hovers.push({
             name: f.name,
             localPath: `${data.path}/${f.name}`,
+            download_url: f.download_url,
             meta: meta
           });
         } else {
+          // If multiple mains exist, this overwrites, but our logic assumes 1 main per ID
           grouped[idKey].main = {
             name: f.name,
             localPath: `${data.path}/${f.name}`,
+            download_url: f.download_url,
             meta: meta
           };
         }
@@ -425,11 +428,11 @@
 
       // Build the images list with direct GitHub Raw paths and extracted metadata
       const imagesList = validProducts.map(prod => ({
-        path: `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${prod.main.localPath}`,
+        path: prod.main.download_url || `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${encodeURI(prod.main.localPath).replace(/#/g, '%23')}`,
         price: prod.main.meta.price,
         title: prod.main.meta.title,
         subtitle: prod.main.meta.subtitle,
-        hovers: prod.hovers.map(h => `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${h.localPath}`)
+        hovers: prod.hovers.map(h => h.download_url || `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${encodeURI(h.localPath).replace(/#/g, '%23')}`)
       }));
 
       grid.innerHTML = ''; // Clear loading text
