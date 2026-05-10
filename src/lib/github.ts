@@ -42,7 +42,7 @@ export const galleryCategories: Record<string, GalleryCategory> = {
   portraits: {
     id: 'portraits',
     title: 'Handcrafted Portraits',
-    path: 'assets/potraits',
+    path: 'assets/portraits',
     image: '/assets/images/portrait.jpg',
     description: 'Stunning, detailed handcrafted portraits bringing subjects to life.',
   },
