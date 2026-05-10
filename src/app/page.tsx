@@ -144,7 +144,7 @@ export default function Home() {
         {user ? (
           <Link href="/profile" className="nav-pill" title="My Account">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-            <span className="nav-label">{user.full_name?.split(' ')[0] || 'Profile'}</span>
+            <span className="nav-label">{profile?.full_name?.split(' ')[0] || 'Profile'}</span>
           </Link>
         ) : (
           <Link href="/auth/login" className="nav-pill" title="Login">
