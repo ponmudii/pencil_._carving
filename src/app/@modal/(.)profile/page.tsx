@@ -88,23 +88,11 @@ export default function ProfileModal() {
         <button onClick={() => router.back()} style={{ position: 'absolute', top: '24px', right: '24px', background: 'rgba(0,0,0,0.03)', border: 'none', width: '40px', height: '40px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--muted)', zIndex: 10, transition: 'all 0.3s ease' }} className="close-btn">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
-        <style jsx>{`
-          .close-btn:hover {
-            background: var(--primary);
-            color: #fff;
-            transform: rotate(90deg);
-          }
-          .profile-modal-card::-webkit-scrollbar {
-            display: none; // Hide scrollbar for Chrome/Safari
-          }
-          @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-          }
-          @keyframes popOut {
-            from { opacity: 0; transform: scale(0.9) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-          }
+        <style>{`
+          .close-btn:hover { background: var(--primary) !important; color: #fff !important; transform: rotate(90deg); }
+          .profile-modal-card::-webkit-scrollbar { display: none; }
+          @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+          @keyframes popOut { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
         `}</style>
         
 
