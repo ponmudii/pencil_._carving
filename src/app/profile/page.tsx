@@ -55,47 +55,24 @@ export default function ProfilePage() {
   }
 
   return (
-    <div 
-      style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.6)', padding: '1rem' }}
-      onClick={() => router.back()}
-    >
-      <div 
-        style={{ 
-          background: 'var(--surface)', 
-          width: '100%', 
-          maxWidth: '700px', 
-          maxHeight: '90vh', 
-          overflowY: 'auto', 
-          borderRadius: '24px', 
-          boxShadow: 'var(--shadow-lg)', 
-          position: 'relative',
-          scrollbarWidth: 'none',
-          msOverflowStyle: 'none'
-        }}
-        onClick={(e) => e.stopPropagation()}
-        className="profile-card"
-      >
-        <button onClick={() => router.back()} style={{ position: 'absolute', top: '24px', right: '24px', background: 'rgba(0,0,0,0.03)', border: 'none', width: '40px', height: '40px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--muted)', zIndex: 10, transition: 'all 0.3s ease' }} className="close-btn">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        </button>
-        <style jsx>{`
-          .close-btn:hover {
-            background: var(--primary);
-            color: #fff;
-            transform: rotate(90deg);
-          }
-          .profile-card::-webkit-scrollbar { display: none; }
-        `}</style>
-        
-        <div style={{ padding: '3rem 2rem 1.5rem', textAlign: 'center', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
-          <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.4rem', color: 'var(--primary)', marginBottom: '0.5rem' }}>
-            Hi {firstName}, {getGreeting().toLowerCase()}!
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '2rem 1rem 4rem' }}>
+      <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+
+        {/* Header */}
+        <div style={{ textAlign: 'center', padding: '2rem 0 2rem', borderBottom: '1px solid rgba(0,0,0,0.07)', marginBottom: '2rem' }}>
+          <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'var(--primary)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', fontWeight: 700, margin: '0 auto 1rem', fontFamily: 'var(--font-heading)' }}>
+            {firstName[0].toUpperCase()}
+          </div>
+          <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '2rem', color: 'var(--primary)', marginBottom: '0.3rem' }}>
+            {getGreeting()}, {firstName}!
           </h1>
-          <p style={{ opacity: 0.7, fontSize: '0.9rem' }}>Member since {formatDate(profile?.created_at || user.created_at)}</p>
+          <p style={{ opacity: 0.6, fontSize: '0.88rem' }}>Member since {formatDate(profile?.created_at || user.created_at)}</p>
+          <p style={{ opacity: 0.5, fontSize: '0.82rem', marginTop: '0.2rem' }}>{user.email}</p>
         </div>
 
-        <div style={{ padding: '2rem' }}>
-          <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.5rem', marginBottom: '1.5rem' }}>Personal Information</h2>
+        {/* Form */}
+        <div style={{ background: 'var(--surface)', borderRadius: '20px', padding: '2rem', boxShadow: 'var(--shadow)' }}>
+          <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', marginBottom: '1.5rem' }}>Personal Information</h2>
           <form onSubmit={handleSave}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: '1.2rem' }}>
               <div className="form-group">
@@ -124,8 +101,8 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            <p style={{ fontSize: '0.85rem', color: 'var(--muted)', marginTop: '1.5rem', padding: '1rem', background: 'rgba(196,95,101,0.05)', borderRadius: 'var(--radius-sm)', borderLeft: '3px solid var(--primary)', fontStyle: 'italic' }}>
-              Your data is strictly confidential and never shared. We only use it to streamline your checkout experience and provide personalized festival discounts.
+            <p style={{ fontSize: '0.82rem', color: 'var(--muted)', marginTop: '1.5rem', padding: '0.8rem 1rem', background: 'rgba(196,95,101,0.05)', borderRadius: 'var(--radius-sm)', borderLeft: '3px solid var(--primary)', fontStyle: 'italic' }}>
+              Your data is strictly confidential and never shared.
             </p>
 
             <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
