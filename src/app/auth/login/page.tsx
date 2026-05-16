@@ -15,15 +15,23 @@ function LoginForm() {
   const [errors, setErrors] = useState<{ email?: string; password?: string; form?: string }>({});
   const [loading, setLoading] = useState(false);
   const [showPass, setShowPass] = useState(false);
-  const { signIn, user } = useAuth();
+  const { signIn, user, profile } = useAuth();
   const { addToast } = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirect = searchParams.get('redirect') || '/profile';
+  const redirect = searchParams.get('redirect') || '/';
 
   useEffect(() => {
-    if (user) router.replace(redirect);
-  }, [user, router, redirect]);
+    if (user) {
+      // First-time user (no name set yet) → go to profile to complete setup
+      // Returning user → go back to where they came from
+      if (!profile?.full_name) {
+        router.replace('/profile');
+      } else {
+        router.replace(redirect);
+      }
+    }
+  }, [user, profile, router, redirect]);
 
   const validate = () => {
     const e: typeof errors = {};
@@ -46,7 +54,7 @@ function LoginForm() {
       setErrors({ form: error.includes('Invalid') ? 'Invalid email or password.' : error });
     } else {
       addToast('success', 'Welcome back! 🎉');
-      router.push(redirect);
+      // Smart redirect is handled by the useEffect above (checks if first-time user)
     }
   };
 
