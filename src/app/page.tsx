@@ -65,22 +65,32 @@ export default function Home() {
 
   return (
     <>
-      {/* Home Icon and Menu */}
+      {/* Home / Menu Button */}
       <div ref={menuRef}>
-        <button className="nav-home" onClick={() => setMenuOpen((o) => !o)} title="Menu" aria-label="Menu">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="4" y1="12" x2="20" y2="12"></line>
-            <line x1="4" y1="6" x2="20" y2="6"></line>
-            <line x1="4" y1="18" x2="20" y2="18"></line>
-          </svg>
+        <button
+          className="nav-home"
+          onClick={() => section === 'about' ? setSection('home') : setMenuOpen((o) => !o)}
+          title={section === 'about' ? 'Back to Home' : 'Menu'}
+          aria-label={section === 'about' ? 'Back to Home' : 'Menu'}
+        >
+          {section === 'about' ? (
+            // Home icon when on About page
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+          ) : (
+            // Hamburger when on Home
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="4" y1="12" x2="20" y2="12"></line>
+              <line x1="4" y1="6" x2="20" y2="6"></line>
+              <line x1="4" y1="18" x2="20" y2="18"></line>
+            </svg>
+          )}
         </button>
 
         {menuOpen && (
           <nav className="nav-menu">
-            <a onClick={() => { setSection('home'); setMenuOpen(false); }} style={{ cursor: 'pointer' }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-              Home
-            </a>
             <a onClick={() => { setSection('about'); setMenuOpen(false); }} style={{ cursor: 'pointer' }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
               About
