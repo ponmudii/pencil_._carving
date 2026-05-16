@@ -68,14 +68,14 @@ export default function Home() {
       {/* Home / Menu Button */}
       <div ref={menuRef}>
         <button
-          className="nav-home"
+          className={`nav-home ${section === 'about' ? '' : 'with-bg'}`}
           onClick={() => section === 'about' ? setSection('home') : setMenuOpen((o) => !o)}
           title={section === 'about' ? 'Back to Home' : 'Menu'}
           aria-label={section === 'about' ? 'Back to Home' : 'Menu'}
         >
           {section === 'about' ? (
             // Home image when on About page
-            <img src="/assets/images/home.png" alt="Home" style={{ padding: '2px' }} onError={(e) => { (e.target as HTMLImageElement).src = 'https://cdn-icons-png.flaticon.com/512/1946/1946488.png'; }} />
+            <img src="/assets/images/home.png" alt="Home" onError={(e) => { (e.target as HTMLImageElement).src = 'https://cdn-icons-png.flaticon.com/512/1946/1946488.png'; }} />
           ) : (
             // Hamburger when on Home
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
